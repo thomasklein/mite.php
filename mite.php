@@ -1,5 +1,5 @@
 <?php
-/* CLASS mite - last updated 8th October 2009
+/* CLASS mite - last updated 13th March 2010
  * 
  * @description provides methods to communicate with the MITE API
  * @package mite.plugins
@@ -18,6 +18,7 @@
  * -------------
  * 
  */
+
 class mite {
 	
 ############
@@ -67,16 +68,16 @@ class mite {
 	
 	
 /*****************************************************
- * Inits remote with mite account data
+ * Inits remote with mite account data and builds general request header
  *
  * @param string $s_apiKey
- * @param string $s_accountSubDomain
+ * @param string $s_accountUrl
  * 
  * @throws EXCEPTION_MISSING_ACCOUNT_DATA
  */	
-	public function init($s_apiKey, $s_accountSubDomain,$b_useSSLSocket = true) {
+	public function init($s_apiKey, $s_accountUrl,$b_useSSLSocket = true) {
 		
-		if (!$s_apiKey || !$s_accountSubDomain) {
+		if (!$s_apiKey || !$s_accountUrl) {
 			throw new Exception('Error: Api key or account URL were missing!',
 								self::EXCEPTION_MISSING_ACCOUNT_DATA);
 			exit;
@@ -84,7 +85,7 @@ class mite {
 		
 		$this->i_port = 80;
 		$this->s_sslPrefix = '';
-		$this->s_miteAccountUrl = urlencode($s_accountSubDomain).".".self::MITE_DOMAIN;
+		$this->s_miteAccountUrl = urlencode($s_accountUrl).".".self::MITE_DOMAIN;
 		
 		if ($b_useSSLSocket) {
 			$this->i_port = 443;
@@ -99,7 +100,7 @@ class mite {
 	
 	
 /*****************************************************
- * Sends a request to mite and returns response data as simplexml object if available
+ * Sends a request to mite and stores possible response data in $this->o_responseXml
  *
  * @param string $s_httpMethod 'post', 'get', 'delete', 'put'
  * @param string $s_rsrcName; e.g. '/time_entries.xml', '/projects.xml', '/time_entries/12345.xml'
@@ -134,18 +135,16 @@ class mite {
 	/*
 	 * @local strings
 	 */
-		$s_fullUrl = $s_responsePart = $s_responseBody = $s_status = $s_request = $s_protocolPrefix = ''; 
-		
+		$s_fullUrl = $s_responsePart = $s_responseBody = $s_status = $s_request = $s_protocolPrefix = '';
 
 	############	
 	# ACTION 
 	#######
 		$s_httpMethod = strtoupper($s_httpMethod);
-		
 		$s_fullUrl = $this->s_miteAccountUrl.$s_rsrcName;
 		
 	# begin to form the request	
-		$s_request = $s_httpMethod." ".$s_rsrcName." HTTP/1.1\n".
+		$s_request = "$s_httpMethod $s_rsrcName HTTP/1.1\n".
 					 $this->s_header;
 	
 		switch ($s_httpMethod) {
@@ -173,7 +172,7 @@ class mite {
 						   &$i_errno,
 						   &$s_errstr,
 						   self::REQUEST_TIMEOUT);
-						   
+
 	# if the socket connection failed - distinguish error cases	
 		if (!$r_fs) {
 			
@@ -198,7 +197,7 @@ class mite {
 	# continue here, if there were no errors when trying to establish 
 	# the socket connection to the remote server 	
 		else {
-				
+			
 		# put request into stream		
 			fputs($r_fs, $s_request);	
 			
@@ -231,17 +230,18 @@ class mite {
 					$s_responsePart = 'body';
 					continue;
 				}
+			# check for and get the http status of the response		
+				if (strpos($s_line,"Status: ") !== FALSE) {
+					$s_status = $s_line;
+				}
 				
 				$a_response[$s_responsePart][] = $s_line;
 			}
 			
-		# get the http status of the response	
-			$s_status = $a_response['header'][(count($a_response['header']) - 1)];
-			
 		# perform actions depending on the response status	
 			switch (trim($s_status)) {
 				
-				case 'Status: 401':
+				case 'Status: 401 Unauthorized':
 					throw new Exception('Status code 401: '.
 										'You have no access to "'.$s_fullUrl.'". Please recheck the provided '.
 										'mite account data in your preferences. Maybe somehting has changed '.
@@ -249,23 +249,23 @@ class mite {
 										self::EXCEPTION_NO_ACCESS);
 					break;
 				
-				case 'Status: 404':
+				case 'Status: 404 Not Found':
 					throw new Exception('Status code 404: '.
 										'Resource "'.$s_fullUrl.'" does not exist.',
 										self::EXCEPTION_RSRC_NOT_FOUND);
 					break;
 				
-				case 'Status: 500':
+				case 'Status: 500 Internal Server Error':
 					throw new Exception('Status code 500: '.
 										'The server encountered an unexpected condition '.
 										'when trying to handle the request to "'.$s_fullUrl.'"');
 					break;
 				
 			# Created - new resource created; returns the new resource as response	
-				case 'Status: 201':
+				case 'Status: 201 Created':
 			# OK - if the resource was deleted returns nothing 
 			#	 - if a ressource was requested returns the ressource(-s) as response
-				case 'Status: 200':
+				case 'Status: 200 OK':
 				
 				# nothing more to expect if a resource was deleted or updated
 					if (($s_httpMethod == "DELETE") || ($s_httpMethod == "PUT"))
@@ -295,7 +295,7 @@ class mite {
 					throw new Exception('The response for handling resource "'.$s_fullUrl.'" '.
 										'with method "'.$s_httpMethod.'" was not expected: '.
 										'<em>'.$s_status.'</em>.',
-										self::EXCEPTION_UNEXPECTED_RESPONSE);
+									self::EXCEPTION_UNEXPECTED_RESPONSE);
 			}
 		}
 		
