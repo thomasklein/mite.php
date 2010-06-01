@@ -9,7 +9,7 @@
  * Example usage:
  * -------------
 	$o_mite = mite::getInstance();
- 	$o_mite->init(<YOUR_API_KEY>,<YOUR_ACCOUNT_SUBDOMAIN>);
+ 	$o_mite->init(<YOUR_API_KEY>,<YOUR_ACCOUNT_SUBDOMAIN>,'my_app_name/v1.2.3');
 	try {
  		$o_responseXML = $o_mite->sendRequest('get','/time_entries.xml');
 	} catch (Exception $e) {
@@ -34,6 +34,7 @@ class mite {
 ############
 # CONSTANTS
 #######	
+    const MITE_PHP_VERSION = 'mite.php 1.2';
 	const MITE_DOMAIN = 'mite.yo.lk';
 	const REQUEST_TIMEOUT = 5;
 	const EXCEPTION_RSRC_NOT_FOUND = 100;
@@ -75,12 +76,16 @@ class mite {
  * 
  * @throws EXCEPTION_MISSING_ACCOUNT_DATA
  */	
-	public function init($s_apiKey, $s_accountUrl,$b_useSSLSocket = true) {
+	public function init($s_apiKey, $s_accountUrl, $s_userAgent = false, $b_useSSLSocket = true) {
 		
 		if (!$s_apiKey || !$s_accountUrl) {
 			throw new Exception('Error: Api key or account URL were missing!',
 								self::EXCEPTION_MISSING_ACCOUNT_DATA);
 			exit;
+		}
+		
+		if (!$s_userAgent) {
+		    $s_userAgent = "mite.php/v".SELF::MITE_PHP_VERSION;
 		}
 		
 		$this->i_port = 80;
@@ -94,7 +99,8 @@ class mite {
 		
 		$this->s_header = "Host: ".$this->s_miteAccountUrl."\r\n".
 						  "X-MiteApiKey: ".$s_apiKey."\r\n".
-                   		  "Content-type: application/xml\r\n";
+                   		  "Content-type: application/xml\r\n".
+                   		  "User-Agent: ".$s_userAgent;
 		
 	}//init
 	
