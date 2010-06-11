@@ -34,7 +34,7 @@ class mite {
 ############
 # CONSTANTS
 #######	
-    const MITE_PHP_VERSION = 'mite.php 1.2';
+    const MITE_PHP_VERSION = '1.2';
 	const MITE_DOMAIN = 'mite.yo.lk';
 	const REQUEST_TIMEOUT = 5;
 	const EXCEPTION_RSRC_NOT_FOUND = 100;
@@ -85,7 +85,7 @@ class mite {
 		}
 		
 		if (!$s_userAgent) {
-		    $s_userAgent = "mite.php/v".SELF::MITE_PHP_VERSION;
+		    $s_userAgent = "mite.php/v".self::MITE_PHP_VERSION;
 		}
 		
 		$this->i_port = 80;
@@ -100,7 +100,7 @@ class mite {
 		$this->s_header = "Host: ".$this->s_miteAccountUrl."\r\n".
 						  "X-MiteApiKey: ".$s_apiKey."\r\n".
                    		  "Content-type: application/xml\r\n".
-                   		  "User-Agent: ".$s_userAgent;
+                   		  "User-Agent: ".$s_userAgent."\r\n";
 		
 	}//init
 	
@@ -309,4 +309,3 @@ class mite {
 	}//sendRequest
 	
 }//mite
-?>
