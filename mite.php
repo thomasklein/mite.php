@@ -1,5 +1,5 @@
 <?php
-/* CLASS mite - last updated 13th March 2010
+/* CLASS mite - last updated 11th June 2010
  * 
  * @description provides methods to communicate with the MITE API
  * @package mite.plugins
