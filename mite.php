@@ -1,15 +1,16 @@
 <?php
-/* CLASS mite - last updated 11th June 2010
+/* CLASS mite - last updated 23th December 2010
  * 
  * @description provides methods to communicate with the MITE API
  * @package mite.plugins
  * @author Thomas Klein <thomas.klein83@gmail.com>
+ * @version of mite.php 1.2.1
  * @license MIT License
  * 
  * Example usage:
  * -------------
 	$o_mite = mite::getInstance();
- 	$o_mite->init(<YOUR_API_KEY>,<YOUR_ACCOUNT_SUBDOMAIN>,'my_app_name/v1.2.3');
+ 	$o_mite->init(<YOUR_API_KEY>,<YOUR_ACCOUNT_SUBDOMAIN>,'<MY_APP_NAME>/v1.2.5');
 	try {
  		$o_responseXML = $o_mite->sendRequest('get','/time_entries.xml');
 	} catch (Exception $e) {
@@ -229,12 +230,16 @@ class mite {
 			
 		# separate response in header and body part 	
 			foreach ($a_rawResponse as $s_line) {
-			
-			# check for the first empty line which separates 
+				
+				$s_line = trim($s_line);
+				
+			# don't consider empty lines or lines with only 0 as value	
+				if ($s_line == '' || $s_line == '0') continue;
+				
+			# check for the first xml line which separates 
 			# header and body part of the response	
-				if (trim($s_line) == '') {
+				if (strpos($s_line,"<?xml") !== FALSE) {
 					$s_responsePart = 'body';
-					continue;
 				}
 			# check for and get the http status of the response		
 				if (strpos($s_line,"Status: ") !== FALSE) {
@@ -276,7 +281,7 @@ class mite {
 				# nothing more to expect if a resource was deleted or updated
 					if (($s_httpMethod == "DELETE") || ($s_httpMethod == "PUT"))
 						break;
-
+							
 				# form response body	
 					$s_responseBody = trim(implode('',$a_response['body']));
 						
