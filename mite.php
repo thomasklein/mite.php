@@ -1,16 +1,15 @@
 <?php
-/* CLASS mite - last updated 23th December 2010
+/* CLASS mite - last updated 13th January 2011
  * 
  * @description provides methods to communicate with the MITE API
  * @package mite.plugins
  * @author Thomas Klein <thomas.klein83@gmail.com>
- * @version of mite.php 1.2.1
  * @license MIT License
  * 
  * Example usage:
  * -------------
 	$o_mite = mite::getInstance();
- 	$o_mite->init(<YOUR_API_KEY>,<YOUR_ACCOUNT_SUBDOMAIN>,'<MY_APP_NAME>/v1.2.5');
+ 	$o_mite->init(<YOUR_API_KEY>,<YOUR_ACCOUNT_SUBDOMAIN>,'my_app_name/v1.2.3');
 	try {
  		$o_responseXML = $o_mite->sendRequest('get','/time_entries.xml');
 	} catch (Exception $e) {
@@ -151,7 +150,7 @@ class mite {
 		$s_fullUrl = $this->s_miteAccountUrl.$s_rsrcName;
 		
 	# begin to form the request	
-		$s_request = "$s_httpMethod $s_rsrcName HTTP/1.1\n".
+		$s_request = "$s_httpMethod $s_rsrcName HTTP/1.0\n".
 					 $this->s_header;
 	
 		switch ($s_httpMethod) {
