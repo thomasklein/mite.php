@@ -1,5 +1,5 @@
 <?php
-/* CLASS mite - last updated 13th January 2011
+/* CLASS mite - last updated 19th May 2011
  * 
  * @description provides methods to communicate with the MITE API
  * @package mite.plugins
@@ -175,8 +175,8 @@ class mite {
 		
 		$r_fs = @fsockopen($this->s_protocolPrefix.$this->s_miteAccountUrl,	
 						   $this->i_port,
-						   &$i_errno,
-						   &$s_errstr,
+						   $i_errno,
+						   $s_errstr,
 						   self::REQUEST_TIMEOUT);
 
 	# if the socket connection failed - distinguish error cases	
