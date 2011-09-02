@@ -1,5 +1,5 @@
 <?php
-/* CLASS mite - last updated 19th May 2011
+/* CLASS mite - last updated 2nd September 2011
  * 
  * @description provides methods to communicate with the MITE API
  * @package mite.plugins
@@ -9,7 +9,7 @@
  * Example usage:
  * -------------
 	$o_mite = mite::getInstance();
- 	$o_mite->init(<YOUR_API_KEY>,<YOUR_ACCOUNT_SUBDOMAIN>,'my_app_name/v1.2.3');
+ 	$o_mite->init(<YOUR_API_KEY>,<YOUR_ACCOUNT_SUBDOMAIN>,'<MY_APP_NAME>/v1.2.3');
 	try {
  		$o_responseXML = $o_mite->sendRequest('get','/time_entries.xml');
 	} catch (Exception $e) {
@@ -34,7 +34,7 @@ class mite {
 ############
 # CONSTANTS
 #######	
-    const MITE_PHP_VERSION = '1.2';
+    const MITE_PHP_VERSION = '1.2.3';
 	const MITE_DOMAIN = 'mite.yo.lk';
 	const REQUEST_TIMEOUT = 5;
 	const EXCEPTION_RSRC_NOT_FOUND = 100;
@@ -262,6 +262,12 @@ class mite {
 				case 'Status: 404 Not Found':
 					throw new Exception('Status code 404: '.
 										'Resource "'.$s_fullUrl.'" does not exist.',
+										self::EXCEPTION_RSRC_NOT_FOUND);
+					break;
+					
+				case 'Status: 302 Found':
+					throw new Exception('Status code 302: '.
+										'Resource "'.$s_fullUrl.'" does not exist or was moved to another uri.',
 										self::EXCEPTION_RSRC_NOT_FOUND);
 					break;
 				
