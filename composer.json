@@ -4,7 +4,7 @@
 	"description": "",
 	"keywords": ["php", "mite"],
 	"homepage": "https://github.com/thomasklein/mite.php",
-	"license": ["GPL-1.0+"],
+	"license": ["MIT"],
 	"authors": [
 		{
 			"name": "Thomas Klein"
