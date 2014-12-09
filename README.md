@@ -3,7 +3,7 @@ PHP class providing methods to easily communicate with the mite.api
 mite (http://mite.yo.lk/en) is a sleek time tracking tool for teams and freelancers.
 
 Example usage:
--------------
+````php
 <?php
 	require_once("path_to_class/mite.php");
 
@@ -15,4 +15,4 @@ Example usage:
 		echo "<p>".$e->getMessage()."</p>";
 	}
 ?>
---------------
+````
