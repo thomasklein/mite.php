@@ -1,0 +1,13 @@
+{
+	"name": "mite.php/mite.php",
+	"type": "library",
+	"description": "",
+	"keywords": ["php", "mite"],
+	"homepage": "https://github.com/thomasklein/mite.php",
+	"license": ["GPL-1.0+"],
+	"authors": [
+		{
+			"name": "Thomas Klein"
+		}
+	]
+}
