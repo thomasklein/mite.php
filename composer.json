@@ -1,13 +1,21 @@
 {
-	"name": "thomasklein/mite.php",
-	"type": "library",
-	"description": "",
-	"keywords": ["php", "mite"],
-	"homepage": "https://github.com/thomasklein/mite.php",
-	"license": ["MIT"],
-	"authors": [
-		{
-			"name": "Thomas Klein"
-		}
-	]
+    "name": "thomasklein/mite.php",
+    "type": "library",
+    "description": "",
+    "keywords": [
+        "php",
+        "mite"
+    ],
+    "homepage": "https://github.com/thomasklein/mite.php",
+    "license": ["MIT"],
+    "authors": [
+        {
+            "name": "Thomas Klein"
+        }
+    ],
+    "autoload": {
+        "classmap": [
+            "."
+        ]
+    }
 }
