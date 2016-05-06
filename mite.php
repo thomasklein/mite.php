@@ -225,6 +225,9 @@ class mite {
 				throw new Exception('Bad request (400) when trying to access "'.$s_fullUrl.'".');
 			}
 
+		# check for and get the http status of the response
+			$s_status = explode(' ', $a_rawResponse[0])[1];
+
 			$s_responsePart = 'header';
 
 		# separate response in header and body part
@@ -240,10 +243,6 @@ class mite {
 				if (strpos($s_line,"<?xml") !== FALSE) {
 					$s_responsePart = 'body';
 				}
-			# check for and get the http status of the response
-				if (strpos($s_line,"Status: ") !== FALSE) {
-					$s_status = $s_line;
-				}
 
 				$a_response[$s_responsePart][] = $s_line;
 			}
@@ -251,7 +250,7 @@ class mite {
 		# perform actions depending on the response status
 			switch (trim($s_status)) {
 
-				case 'Status: 401 Unauthorized':
+				case '401':
 					throw new Exception('Status code 401: '.
 										'You have no access to "'.$s_fullUrl.'". Please recheck the provided '.
 										'mite account data in your preferences. Maybe somehting has changed '.
@@ -259,29 +258,29 @@ class mite {
 										self::EXCEPTION_NO_ACCESS);
 					break;
 
-				case 'Status: 404 Not Found':
+				case '404':
 					throw new Exception('Status code 404: '.
 										'Resource "'.$s_fullUrl.'" does not exist.',
 										self::EXCEPTION_RSRC_NOT_FOUND);
 					break;
 
-				case 'Status: 302 Found':
+				case '302':
 					throw new Exception('Status code 302: '.
 										'Resource "'.$s_fullUrl.'" does not exist or was moved to another uri.',
 										self::EXCEPTION_RSRC_NOT_FOUND);
 					break;
 
-				case 'Status: 500 Internal Server Error':
+				case '500':
 					throw new Exception('Status code 500: '.
 										'The server encountered an unexpected condition '.
 										'when trying to handle the request to "'.$s_fullUrl.'"');
 					break;
 
 			# Created - new resource created; returns the new resource as response
-				case 'Status: 201 Created':
+				case '201':
 			# OK - if the resource was deleted returns nothing
 			#	 - if a ressource was requested returns the ressource(-s) as response
-				case 'Status: 200 OK':
+				case '200':
 
 				# nothing more to expect if a resource was deleted or updated
 					if (($s_httpMethod == "DELETE") || ($s_httpMethod == "PUT"))
