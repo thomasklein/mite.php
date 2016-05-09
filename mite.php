@@ -34,7 +34,7 @@ class mite {
 ############
 # CONSTANTS
 #######
-    const MITE_PHP_VERSION = '1.2.3';
+    const MITE_PHP_VERSION = '1.2.6';
 	const MITE_DOMAIN = 'mite.yo.lk';
 	const REQUEST_TIMEOUT = 5;
 	const EXCEPTION_RSRC_NOT_FOUND = 100;
